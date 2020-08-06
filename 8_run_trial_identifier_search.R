@@ -69,7 +69,7 @@ run_trial_identifier_search <- function(folder, save_file) {
                     
                 }
                 
-                if ( identifier[1] == "ClinicalTrials.gov") { # If it's an NCT number, check that it exists on CT dot gov
+                if ( identifier[1] == "NCT") { # If it's an NCT number, check that it exists on CT dot gov
                     
                     for (idmatch in cleaned_matches) {
                         

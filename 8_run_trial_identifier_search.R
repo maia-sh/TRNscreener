@@ -19,6 +19,11 @@ run_trial_identifier_search <- function(folder, save_file) {
     # clinicaltrials.gov. 1 means yes, 0 means no, and
     # NA means that it is not an NCT number.
     
+    # NOTE: The script checks whether an NCT number is
+    # legit by connecting to the ClinicalTrials.gov API
+    # so you will need an internet connexion for this to
+    # work.
+    
     # If you want to add new identifiers to be searched
     # Add them to this list
     identifiers <- list(

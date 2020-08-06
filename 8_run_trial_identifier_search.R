@@ -74,6 +74,8 @@ run_trial_identifier_search <- function(folder, save_file) {
                     
                 }
                 
+                cleaned_matches <- unique(cleaned_matches)
+                
                 if ( identifier[1] == "NCT") { # If it's an NCT number, check that it exists on CT dot gov
                     
                     for (idmatch in cleaned_matches) {

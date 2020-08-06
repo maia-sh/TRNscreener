@@ -11,6 +11,7 @@ source("5_retrieve_DAS.R")
 source("6_oddpub_medrxiv_DAS.R")
 source("7_run_barzooka.R")
 source_python("barzooka.py")
+source("8_run_trial_identifier_search.R")
 
 #set parameters - for now we assume that we run the script on Mondays
 # and retrieve the list from last week - probably need to be converted to input parameters
@@ -101,4 +102,30 @@ barzooka_results_filename <- paste0(results_folder,
                                     "covid_barzooka_results_", 
                                     start_date, "_", end_date, ".csv")
 run_barzooka(pdf_folder, tmp_folder, barzooka_results_filename)
+
+#-----------------------------------------------------------------------------------------------
+# 8 - run trial identifier search
+#-----------------------------------------------------------------------------------------------
+
+trial_identifier_search_html_file <- paste0(
+  results_folder,
+  "trial_identifier_search_results_html_",
+  start_date,
+  "_",
+  end_date,
+  ".csv"
+)
+
+trial_identifier_search_text_file <- paste0(
+  results_folder,
+  "trial_identifier_search_results_text_",
+  start_date,
+  "_",
+  end_date,
+  ".csv"
+)
+
+run_trial_identifier_search(pdf_html_folder, trial_identifier_search_html_file)
+
+run_trial_identifier_search(pdf_text_folder, trial_identifier_search_text_file)
 

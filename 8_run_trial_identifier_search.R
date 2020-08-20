@@ -127,11 +127,45 @@ run_trial_identifier_search <- function(folder, save_file) {
             
             unlink(temp)
             
-            dl_trials <- xml_text(xml_find_all(xml, "/FullStudiesResponse/FullStudyList/FullStudy/Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'IdentificationModule')]/Field[contains(@Name, 'NCTId')]"))
+            dl_trials <- xml_find_all(xml, "/FullStudiesResponse/FullStudyList/FullStudy")
+    
+            # Extract some trial data from the downloaded record
+            
+            for (dl_trial in dl_trials) {
+                
+                dl_trial_nct <- xml_text(xml_find_all(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'IdentificationModule')]/Field[contains(@Name, 'NCTId')]"))
+                
+                dl_trial_title <- xml_text(xml_find_all(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'IdentificationModule')]/Field[contains(@Name, 'BriefTitle')]"))
+                
+                found_ncts[found_ncts$identifier == dl_trial_nct, "title"] <- dl_trial_title
+                
+                if (length(xml_find_all(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'DesignModule')]/List[contains(@Name, 'PhaseList')]")) > 0) {
+                    dl_trial_phase <- xml_text(xml_find_all(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'DesignModule')]/List[contains(@Name, 'PhaseList')]"))
+                } else {
+                    dl_trial_phase <- ""
+                }
+                
+                found_ncts[found_ncts$identifier == dl_trial_nct, "phase"] <- dl_trial_phase
+            
+                dl_trial_overall_status <- xml_text(xml_find_all(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'StatusModule')]/Field[contains(@Name, 'OverallStatus')]"))
+                
+                found_ncts[found_ncts$identifier == dl_trial_nct, "overall_status"] <- dl_trial_overall_status
+                
+                dl_trial_primary_completion <- paste(xml_text(xml_find_first(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'StatusModule')]/Struct[contains(@Name, 'PrimaryCompletionDateStruct')]/Field[contains(@Name, 'PrimaryCompletionDate')]")))
+                
+                found_ncts[found_ncts$identifier == dl_trial_nct, "primary_completion"] <- dl_trial_primary_completion
+                
+                dl_trial_first_posted <- paste(xml_text(xml_find_first(dl_trial, "Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'StatusModule')]/Struct[contains(@Name, 'StudyFirstPostDateStruct')]/Field[contains(@Name, 'StudyFirstPostDate')]")))
+                
+                found_ncts[found_ncts$identifier == dl_trial_nct, "first_posted"] <- dl_trial_first_posted
+                
+            }
+            
+            dl_trials_ncts <- xml_text(xml_find_all(xml, "/FullStudiesResponse/FullStudyList/FullStudy/Struct[contains(@Name, 'Study')]/Struct[contains(@Name, 'ProtocolSection')]/Struct[contains(@Name, 'IdentificationModule')]/Field[contains(@Name, 'NCTId')]"))
             
             for (nct in ncts_to_check$identifier) {
                 
-                found_ncts[found_ncts$identifier == nct, "clinicaltrials.gov"] <- as.character(nct %in% dl_trials)
+                found_ncts[found_ncts$identifier == nct, "clinicaltrials.gov"] <- as.character(nct %in% dl_trials_ncts)
                 
             }
             

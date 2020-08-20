@@ -187,5 +187,3 @@ run_trial_identifier_search <- function(folder, save_file) {
     }
     
 }
-
-run_trial_identifier_search("papers-2020-08-19/", "test-2020-08-20.csv")

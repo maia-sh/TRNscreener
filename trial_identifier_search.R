@@ -5,35 +5,39 @@ run_trial_identifier_search <- function(folder, save_file) {
     
     if ( ! file.exists(save_file) ) {
         
-        # The following will print out a CSV with one row per
-        # clinical trial identifier found.
+        ## The following will print out a CSV with one row per
+        ## clinical trial identifier found.
         
-        # The first column of the output CSV contains the DOI
-        # of the paper in which the identifier was found.
+        ## The first column of the output CSV contains the DOI
+        ## of the paper in which the identifier was found.
         
-        # The second column indicates the type of identifier
-        # e.g. NCT or ISRCTN. (More may be added)
+        ## The second column indicates the type of identifier
+        ## e.g. NCT or ISRCTN. (More may be added)
         
-        # The third column contains the identifier that was
-        # found
+        ## The third column contains the identifier that was
+        ## found
         
-        # The fourth column indicates whether the NCT number
-        # corresponds to a legitimate record on
-        # clinicaltrials.gov. 1 means yes, 0 means no, and
-        # NA means that it is not an NCT number.
+        ## The fourth column indicates whether the NCT number
+        ## corresponds to a legitimate record on
+        ## clinicaltrials.gov. 1 means yes, 0 means no, and
+        ## NA means that it is not an NCT number.
         
-        # NOTE: The script checks whether an NCT number is
-        # legit by connecting to the ClinicalTrials.gov API
-        # so you will need an internet connexion for this to
-        # work.
+        ## NOTE: The script checks whether an NCT number is
+        ## legit by connecting to the ClinicalTrials.gov API
+        ## so you will need an internet connexion for this to
+        ## work.
         
-        # If you want to add new identifiers to be searched
-        # Add them to this list
+        ## If you want to add new identifiers to be searched
+        ## Add them to this list
         identifiers <- list(
-            c("NCT", "NCT[0-9 -]+[0-9]"),
-            c("ISRCTN", "ISRCTN[0-9 -]+[0-9]")
+            c("NCT", "(?i)NCT\\W*0\\d{7}"),
+            c("ISRCTN", "(?i)ISRCTN\\W*\\d{8}"),
+            c("DRKS", "(?i)DRKS\\W*000\\d{5}")
         )
-        # End of list of identifiers to search for
+        ## End of list of identifiers to search for
+        
+        ## Regular expressions from:
+        ## https://github.com/maia-sh/ctregistries/blob/master/inst/extdata/registries.csv
         
         print("Identifying trials ...")
         

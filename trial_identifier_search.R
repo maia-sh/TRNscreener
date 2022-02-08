@@ -1,6 +1,9 @@
 library(tidyverse)
 library(xml2)
 
+# devtools::install_github("maia-sh/ctregistries")
+library(ctregistries)
+
 run_trial_identifier_search <- function(folder, save_file) {
     
     if ( ! file.exists(save_file) ) {
@@ -27,17 +30,24 @@ run_trial_identifier_search <- function(folder, save_file) {
         ## so you will need an internet connexion for this to
         ## work.
         
+        # Get regexes for PubMed/ICTRP registries
+        identifiers <-
+            ctregistries::registries %>% 
+            select(registry, trn_regex) %>% 
+            rowwise() %>% 
+            mutate(registry_regex = list(c(registry, trn_regex))) %>% 
+            pull(registry_regex)
+        
         ## If you want to add new identifiers to be searched
         ## Add them to this list
-        identifiers <- list(
-            c("NCT", "(?i)NCT\\W*0\\d{7}"),
-            c("ISRCTN", "(?i)ISRCTN\\W*\\d{8}"),
-            c("DRKS", "(?i)DRKS\\W*000\\d{5}")
+        
+        additional_identifiers <- list(
+            # c("name", "regex"),
         )
         ## End of list of identifiers to search for
         
-        ## Regular expressions from:
-        ## https://github.com/maia-sh/ctregistries/blob/master/inst/extdata/registries.csv
+        # Add additional identifiers
+        identifiers <- c(identifiers, additional_identifiers)
         
         print("Identifying trials ...")
         

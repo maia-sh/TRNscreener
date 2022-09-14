@@ -5,6 +5,11 @@ library(xml2)
 library(ctregistries)
 
 run_trial_identifier_search <- function(folder, save_file) {
+
+    ## Add a trailing slash, if necessary
+    if (substr(folder, nchar(folder), nchar(folder)) != "/") {
+        folder <- paste0(folder, "/")
+    }
     
     if ( ! file.exists(save_file) ) {
         

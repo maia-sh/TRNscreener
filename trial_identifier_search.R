@@ -77,7 +77,8 @@ run_trial_identifier_search <- function(folder, save_file) {
                 
                 text <- readChar(filename, file.info(filename)$size)
                 
-                idmatches <- regmatches(text, gregexpr(identifier[2], text))
+                # Allow lookaround in regexes
+                idmatches <- regmatches(text, gregexpr(identifier[2], text, perl = TRUE))
                 
                 if (length(idmatches[[1]]) > 0) {
                     
